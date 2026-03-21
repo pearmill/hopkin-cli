@@ -21,7 +21,8 @@ function escapeField(value: unknown, delimiter: string): string {
   if (value === null || value === undefined) {
     return "";
   }
-  const str = String(value);
+  const str =
+    typeof value === "object" ? JSON.stringify(value) : String(value);
   const needsQuoting =
     str.includes(delimiter) || str.includes('"') || str.includes("\n") || str.includes("\r");
   if (needsQuoting) {

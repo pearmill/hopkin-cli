@@ -60,6 +60,19 @@ describe("renderCSV", () => {
     expect(typeof result).toBe("string");
   });
 
+  it("serializes nested objects as JSON instead of [object Object]", () => {
+    const data = [
+      {
+        name: "Advertiser 1",
+        settings: { currency: "USD", timezone: "UTC" },
+        tags: ["tag1", "tag2"],
+      },
+    ];
+    const result = renderCSV(data);
+    expect(result).not.toContain("[object Object]");
+    expect(result).toContain("USD");
+  });
+
   it("handles null and undefined values", () => {
     const data = [{ a: null, b: undefined, c: "ok" }];
     const result = renderCSV(data);

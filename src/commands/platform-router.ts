@@ -50,6 +50,17 @@ function parseResponseData(
     if (Array.isArray(parsed)) {
       return { data: parsed as Record<string, unknown>[], isRawText: false };
     }
+    // If the parsed object contains an array-of-objects field, extract it as the data rows.
+    // This handles servers (e.g. TikTok) that wrap results like {advertisers: [...], pagination: {...}, ...}
+    if (parsed && typeof parsed === "object") {
+      const obj = parsed as Record<string, unknown>;
+      const arrayFields = Object.entries(obj).filter(
+        ([, v]) => Array.isArray(v) && v.length > 0 && typeof v[0] === "object" && v[0] !== null,
+      );
+      if (arrayFields.length === 1) {
+        return { data: arrayFields[0][1] as Record<string, unknown>[], isRawText: false };
+      }
+    }
     return { data: [parsed as Record<string, unknown>], isRawText: false };
   } catch {
     // Response is not JSON (e.g., markdown text) - return as raw text

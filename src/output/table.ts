@@ -23,7 +23,8 @@ function formatCell(value: unknown, maxWidth?: number): string {
   if (value === null || value === undefined) {
     return "";
   }
-  let str = String(value);
+  let str =
+    typeof value === "object" ? JSON.stringify(value) : String(value);
   if (maxWidth && str.length > maxWidth) {
     str = str.slice(0, maxWidth - 1) + "\u2026";
   }
@@ -44,7 +45,12 @@ function computeColWidths(
     let max = h.length;
     for (const row of data) {
       const val = row[h];
-      const len = val == null ? 0 : String(val).length;
+      const len =
+        val == null
+          ? 0
+          : typeof val === "object"
+            ? JSON.stringify(val).length
+            : String(val).length;
       if (len > max) max = len;
     }
     return max;

@@ -45,6 +45,19 @@ describe("renderTable", () => {
     expect(typeof result).toBe("string");
   });
 
+  it("serializes nested objects as JSON instead of [object Object]", () => {
+    const data = [
+      {
+        name: "Advertiser 1",
+        settings: { currency: "USD", timezone: "UTC" },
+        tags: ["tag1", "tag2"],
+      },
+    ];
+    const result = renderTable(data);
+    expect(result).not.toContain("[object Object]");
+    expect(result).toContain("USD");
+  });
+
   it("handles data with inconsistent keys across rows", () => {
     const data = [
       { a: 1, b: 2 },
