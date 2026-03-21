@@ -65,7 +65,7 @@ jobs:
       - name: Check package
         run: npm pack --dry-run 2>&1 | tee pack-output.txt
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dist
           path: dist/
