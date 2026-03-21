@@ -7,7 +7,7 @@ import type { ToolsCache, MCPTool } from "../../src/types.js";
 
 // ── Helpers ──────────────────────────────────────────────────────────
 
-function makeTool(name: string, desc: string, schema?: Record<string, unknown>): MCPTool {
+function makeTool(name: string, desc: string, schema?: MCPTool["inputSchema"]): MCPTool {
   return {
     name,
     description: desc,

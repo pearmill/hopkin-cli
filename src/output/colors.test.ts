@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { COLORS, colorize, supportsColor } from "./colors.js";
 
 describe("COLORS", () => {

@@ -4,7 +4,7 @@ import { resolveAuth } from "../../auth/resolver.js";
 import { readConfig } from "../../config/manager.js";
 import { getPlatforms } from "../../config/servers.js";
 import { formatOutput, detectFormat } from "../../output/formatter.js";
-import type { OutputFormat, ToolsCache } from "../../types.js";
+import type { OutputFormat } from "../../types.js";
 
 export default defineCommand({
   meta: { name: "list", description: "List available tools" },

@@ -17,9 +17,11 @@ vi.mock("../config/paths.js", () => ({
 }));
 
 describe("util/update-check", () => {
-  let stderrSpy: ReturnType<typeof vi.spyOn>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let stderrSpy: any;
   let originalIsTTY: boolean | undefined;
-  let fetchSpy: ReturnType<typeof vi.spyOn>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let fetchSpy: any;
 
   beforeEach(() => {
     stderrSpy = vi.spyOn(process.stderr, "write").mockReturnValue(true);

@@ -42,8 +42,6 @@ describe("Platform config", () => {
 
   describe("meta.default_account applies only to meta", () => {
     it("meta default_account is used when --account not provided", () => {
-      const metaConfig = { default_account: "act_meta_default" };
-
       // buildArgs doesn't directly consume default_account, but the
       // platform router maps it to --account. We test that buildArgs
       // processes the account flag correctly.
@@ -55,9 +53,6 @@ describe("Platform config", () => {
     });
 
     it("meta config does not inject into google schema", () => {
-      // meta config keys should not appear in google args
-      const metaConfig = { default_account: "act_meta_default" };
-
       // buildArgs with google schema and no matching config keys
       const args = buildArgs(
         { account: "google_customer_123" },

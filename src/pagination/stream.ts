@@ -1,6 +1,5 @@
 import type { OutputFormat, PageResult } from "../types.js";
 import { writeOutput } from "../output/writer.js";
-import { formatOutput } from "../output/formatter.js";
 import { renderCSV } from "../output/csv.js";
 import { renderTable } from "../output/table.js";
 

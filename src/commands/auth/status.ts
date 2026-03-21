@@ -1,5 +1,5 @@
 import { defineCommand } from "citty";
-import { readCredentials, hasCredentials } from "../../auth/credentials.js";
+import { readCredentials } from "../../auth/credentials.js";
 import { getConfigDir } from "../../config/paths.js";
 import { renderJSON } from "../../output/json.js";
 import { EXIT_CODES } from "../../constants.js";

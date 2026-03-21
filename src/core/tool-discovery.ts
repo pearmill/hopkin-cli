@@ -53,7 +53,7 @@ export async function discoverTools(options: DiscoveryOptions): Promise<ToolsCac
   const { configDir, forceRefresh = false, platforms: targetPlatforms, apiKey, configServers } = options;
   const dir = configDir ?? getConfigDir();
 
-  let cache = readToolsCache(dir) ?? { version: 1, entries: {} };
+  const cache = readToolsCache(dir) ?? { version: 1, entries: {} };
   const servers = getServers(configServers);
   const platformsToProcess = targetPlatforms ?? Object.keys(servers);
 

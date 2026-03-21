@@ -1,4 +1,4 @@
-import { readToolsCache, findTool, discoverTools } from "../core/tool-discovery.js";
+import { readToolsCache, discoverTools } from "../core/tool-discovery.js";
 import { resolveAuth } from "../auth/resolver.js";
 import { buildArgs } from "../core/arg-builder.js";
 import { detectFormat, formatOutput } from "../output/formatter.js";

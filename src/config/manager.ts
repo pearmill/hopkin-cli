@@ -2,7 +2,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import type { HopkinConfig } from "../types.js";
 import { CONFIG_FILE } from "../constants.js";
-import { getConfigDir, ensureConfigDir } from "./paths.js";
+import { getConfigDir } from "./paths.js";
 
 function resolveConfigPath(configDir?: string): string {
   const dir = configDir ?? getConfigDir();

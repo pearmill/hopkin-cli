@@ -3,7 +3,8 @@ import { debugLog, debugRequest, debugResponse, setDebug } from "./debug.js";
 
 describe("util/debug", () => {
   const originalEnv = { ...process.env };
-  let stderrSpy: ReturnType<typeof vi.spyOn>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let stderrSpy: any;
 
   beforeEach(() => {
     stderrSpy = vi.spyOn(process.stderr, "write").mockReturnValue(true);

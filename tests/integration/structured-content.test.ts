@@ -1,5 +1,4 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import fs from "node:fs";
 import http from "node:http";
 import { createTempConfig, type TempConfigContext } from "../helpers/temp-config.js";
 import { routePlatformCommand } from "../../src/commands/platform-router.js";

@@ -1,10 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import fs from "node:fs";
 import { resolveAuth } from "../../src/auth/resolver.js";
-import { writeCredentials, clearCredentials } from "../../src/auth/credentials.js";
+import { writeCredentials } from "../../src/auth/credentials.js";
 import { AuthError } from "../../src/errors.js";
 import { detectFormat } from "../../src/output/formatter.js";
-import { readConfig, writeConfig } from "../../src/config/manager.js";
 import { createTempConfig, type TempConfigContext } from "../helpers/temp-config.js";
 
 describe("Flag precedence", () => {

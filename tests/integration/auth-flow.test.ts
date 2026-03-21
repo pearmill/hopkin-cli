@@ -51,7 +51,7 @@ describe("Auth flow integration", () => {
   let tempConfig: TempConfigContext;
   let stdout: ReturnType<typeof captureStdout>;
   let stderr: ReturnType<typeof captureStderr>;
-  let originalExitCode: number | undefined;
+  let originalExitCode: typeof process.exitCode;
 
   beforeEach(() => {
     tempConfig = createTempConfig();
