@@ -66,7 +66,6 @@ const main = defineCommand({
     config: () => import("./commands/config/index.js").then((m) => m.default),
     tools: () => import("./commands/tools/index.js").then((m) => m.default),
     apikeys: () => import("./commands/apikeys/index.js").then((m) => m.default),
-    skill: () => import("./commands/skill/index.js").then((m) => m.default),
     completion: () =>
       import("./commands/completion.js").then((m) => m.default),
   },
@@ -77,7 +76,7 @@ export async function runCli(): Promise<void> {
   const hasHelp = args.includes("--help") || args.includes("-h");
 
   // Check if the first arg is a known builtin subcommand
-  const builtinCommands = new Set(["auth", "config", "tools", "apikeys", "skill", "completion"]);
+  const builtinCommands = new Set(["auth", "config", "tools", "apikeys", "completion"]);
   const firstArg = args[0];
 
   if (!firstArg || firstArg.startsWith("-") || builtinCommands.has(firstArg)) {

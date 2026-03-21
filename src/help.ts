@@ -110,7 +110,6 @@ export async function printRootHelp(cache: ToolsCache | null): Promise<void> {
   lines.push(`  ${s.cmd("config")}        Manage CLI configuration`);
   lines.push(`  ${s.cmd("tools")}         Manage MCP tool discovery`);
   lines.push(`  ${s.cmd("apikeys")}       Manage API keys`);
-  lines.push(`  ${s.cmd("skill")}         Install Claude Code skill`);
   lines.push(`  ${s.cmd("completion")}    Generate shell completion scripts`);
 
   if (cache && Object.keys(cache.entries).length > 0) {
