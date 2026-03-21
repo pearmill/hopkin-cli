@@ -1,0 +1,51 @@
+{
+  "name": "@hopkin/cli",
+  "version": "0.1.0",
+  "description": "CLI for Hopkin ad platform management",
+  "license": "Apache-2.0",
+  "type": "module",
+  "bin": {
+    "hopkin": "./dist/hopkin.cjs"
+  },
+  "files": [
+    "dist",
+    "bin"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run --project unit",
+    "test:int": "vitest run --project integration",
+    "test:reg": "vitest run --project regression",
+    "test:e2e": "vitest run --project e2e",
+    "test:all": "vitest run",
+    "bench": "vitest bench",
+    "lint": "eslint src/ tests/",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build && npm run test:all"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^7.5.0",
+    "chalk": "^5.4.1",
+    "citty": "^0.1.6",
+    "cli-table3": "^0.6.5",
+    "fast-csv": "^5.0.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "@types/node": "^22.0.0",
+    "eslint": "^9.39.4",
+    "execa": "^9.5.0",
+    "nock": "^14.0.0",
+    "tsup": "^8.4.0",
+    "typescript": "^5.7.0",
+    "typescript-eslint": "^8.57.1",
+    "vitest": "^3.1.0"
+  }
+}

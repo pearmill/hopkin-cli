@@ -1,0 +1,47 @@
+{
+  "tools": [
+    {
+      "name": "reddit_ads_get_campaigns",
+      "description": "List campaigns for a Reddit Ads account",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": { "type": "string", "description": "Reddit Ads account ID" },
+          "status": { "type": "string", "enum": ["ACTIVE", "PAUSED", "COMPLETED", "EXHAUSTED"], "description": "Filter by campaign status" },
+          "limit": { "type": "number", "description": "Number of results per page" },
+          "cursor": { "type": "string", "description": "Pagination cursor" }
+        },
+        "required": ["account_id"]
+      }
+    },
+    {
+      "name": "reddit_ads_get_ad_groups",
+      "description": "List ad groups for a Reddit Ads campaign",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": { "type": "string", "description": "Reddit Ads account ID" },
+          "campaign_id": { "type": "string", "description": "Campaign ID to filter by" },
+          "limit": { "type": "number", "description": "Number of results per page" },
+          "cursor": { "type": "string", "description": "Pagination cursor" }
+        },
+        "required": ["account_id"]
+      }
+    },
+    {
+      "name": "reddit_ads_create_campaign",
+      "description": "Create a new Reddit Ads campaign",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": { "type": "string", "description": "Reddit Ads account ID" },
+          "name": { "type": "string", "description": "Campaign name" },
+          "objective": { "type": "string", "enum": ["AWARENESS", "CONSIDERATION", "CONVERSIONS"], "description": "Campaign objective" },
+          "status": { "type": "string", "enum": ["ACTIVE", "PAUSED"], "description": "Campaign status" },
+          "daily_budget_micro": { "type": "number", "description": "Daily budget in micros" }
+        },
+        "required": ["account_id", "name", "objective"]
+      }
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "tools": [
+    {
+      "name": "google_ads_get_campaigns",
+      "description": "List campaigns for a Google Ads account",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "customer_id": { "type": "string", "description": "Google Ads customer ID" },
+          "login_customer_id": { "type": "string", "description": "Manager (MCC) customer ID" },
+          "status": { "type": "string", "enum": ["ENABLED", "PAUSED", "REMOVED"], "description": "Filter by campaign status" },
+          "limit": { "type": "number", "description": "Number of results per page" },
+          "cursor": { "type": "string", "description": "Pagination cursor" }
+        },
+        "required": ["customer_id"]
+      }
+    },
+    {
+      "name": "google_ads_get_ad_groups",
+      "description": "List ad groups for a Google Ads campaign",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "customer_id": { "type": "string", "description": "Google Ads customer ID" },
+          "login_customer_id": { "type": "string", "description": "Manager (MCC) customer ID" },
+          "campaign_id": { "type": "string", "description": "Campaign ID to filter by" },
+          "limit": { "type": "number", "description": "Number of results per page" },
+          "cursor": { "type": "string", "description": "Pagination cursor" }
+        },
+        "required": ["customer_id"]
+      }
+    },
+    {
+      "name": "google_ads_create_campaign",
+      "description": "Create a new Google Ads campaign",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "customer_id": { "type": "string", "description": "Google Ads customer ID" },
+          "login_customer_id": { "type": "string", "description": "Manager (MCC) customer ID" },
+          "name": { "type": "string", "description": "Campaign name" },
+          "advertising_channel_type": { "type": "string", "enum": ["SEARCH", "DISPLAY", "SHOPPING", "VIDEO", "PERFORMANCE_MAX"], "description": "Campaign type" },
+          "status": { "type": "string", "enum": ["ENABLED", "PAUSED"], "description": "Campaign status" },
+          "budget_amount_micros": { "type": "number", "description": "Daily budget in micros" }
+        },
+        "required": ["customer_id", "name", "advertising_channel_type"]
+      }
+    }
+  ]
+}

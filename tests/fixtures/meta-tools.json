@@ -1,0 +1,76 @@
+{
+  "tools": [
+    {
+      "name": "meta_ads_get_campaigns",
+      "description": "List campaigns for a Meta Ads account",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": { "type": "string", "description": "Meta Ads account ID" },
+          "status": { "type": "string", "enum": ["ACTIVE", "PAUSED", "DELETED", "ARCHIVED"], "description": "Filter by campaign status" },
+          "limit": { "type": "number", "description": "Number of results per page" },
+          "cursor": { "type": "string", "description": "Pagination cursor" }
+        },
+        "required": ["account_id"]
+      }
+    },
+    {
+      "name": "meta_ads_get_adsets",
+      "description": "List ad sets for a Meta Ads campaign",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": { "type": "string", "description": "Meta Ads account ID" },
+          "campaign_id": { "type": "string", "description": "Campaign ID to filter by" },
+          "limit": { "type": "number", "description": "Number of results per page" },
+          "cursor": { "type": "string", "description": "Pagination cursor" }
+        },
+        "required": ["account_id"]
+      }
+    },
+    {
+      "name": "meta_ads_get_ads",
+      "description": "List ads for a Meta Ads account",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": { "type": "string", "description": "Meta Ads account ID" },
+          "adset_id": { "type": "string", "description": "Ad set ID to filter by" },
+          "limit": { "type": "number", "description": "Number of results per page" },
+          "cursor": { "type": "string", "description": "Pagination cursor" }
+        },
+        "required": ["account_id"]
+      }
+    },
+    {
+      "name": "meta_ads_create_campaign",
+      "description": "Create a new Meta Ads campaign",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": { "type": "string", "description": "Meta Ads account ID" },
+          "name": { "type": "string", "description": "Campaign name" },
+          "objective": { "type": "string", "enum": ["OUTCOME_AWARENESS", "OUTCOME_ENGAGEMENT", "OUTCOME_LEADS", "OUTCOME_SALES", "OUTCOME_TRAFFIC"], "description": "Campaign objective" },
+          "status": { "type": "string", "enum": ["ACTIVE", "PAUSED"], "description": "Initial campaign status" },
+          "daily_budget": { "type": "number", "description": "Daily budget in cents" }
+        },
+        "required": ["account_id", "name", "objective"]
+      }
+    },
+    {
+      "name": "meta_ads_update_campaign",
+      "description": "Update an existing Meta Ads campaign",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": { "type": "string", "description": "Meta Ads account ID" },
+          "campaign_id": { "type": "string", "description": "Campaign ID to update" },
+          "name": { "type": "string", "description": "New campaign name" },
+          "status": { "type": "string", "enum": ["ACTIVE", "PAUSED"], "description": "New campaign status" },
+          "daily_budget": { "type": "number", "description": "New daily budget in cents" }
+        },
+        "required": ["account_id", "campaign_id"]
+      }
+    }
+  ]
+}
