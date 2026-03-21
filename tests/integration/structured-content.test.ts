@@ -51,6 +51,25 @@ const TEXT_ONLY_RESPONSE: MCPToolCallResponse = {
   content: [{ type: "text", text: "# Hello\n\nThis is markdown" }],
 };
 
+// Simulates TikTok-style response: no structuredContent, JSON text with nested data array
+const TIKTOK_STYLE_RESPONSE: MCPToolCallResponse = {
+  content: [
+    {
+      type: "text",
+      text: JSON.stringify({
+        advertisers: [
+          { advertiser_id: "111", name: "Acme Corp", status: "ACTIVE" },
+          { advertiser_id: "222", name: "Beta Inc", status: "PAUSED" },
+        ],
+        pagination: { hasMore: false, cursor: "" },
+        cached: true,
+        synced_at: "2026-03-21T19:24:28.000Z",
+        refreshing: true,
+      }),
+    },
+  ],
+};
+
 function createMockServer(responses: Map<string, MCPToolCallResponse>) {
   const server = http.createServer((req, res) => {
     const body: Buffer[] = [];
@@ -249,6 +268,52 @@ describe("structuredContent response handling", () => {
     expect(output[0].id).toBe("act_111");
     // Should NOT contain markdown
     expect(captured).not.toContain("##");
+  });
+
+  it("extracts nested data array from text-only JSON response (TikTok-style)", async () => {
+    const tiktokTool: MCPTool = {
+      name: "tiktok_ads_list_advertisers",
+      description: "List advertisers",
+      inputSchema: {
+        type: "object",
+        properties: { reason: { type: "string" } },
+        required: ["reason"],
+      },
+    };
+
+    mockServer = createMockServer(new Map([
+      ["tiktok_ads_list_advertisers", TIKTOK_STYLE_RESPONSE],
+    ]));
+    port = await mockServer.start();
+
+    // Write a cache with the tiktok tool
+    const tiktokCache: ToolsCache = {
+      version: 1,
+      entries: {
+        tiktok: {
+          platform: "tiktok",
+          tools: [tiktokTool],
+          fetched_at: Date.now(),
+          server_url: `http://localhost:${port}`,
+        },
+      },
+    };
+    writeToolsCache(tiktokCache, tempConfig.dir);
+
+    await routePlatformCommand(
+      ["tiktok", "advertisers", "list", "--reason", "test"],
+      { json: true, configDir: tempConfig.dir },
+    );
+
+    const output = JSON.parse(captured.trim());
+    // Should extract the advertisers array, not wrap the whole object
+    expect(output).toHaveLength(2);
+    expect(output[0].advertiser_id).toBe("111");
+    expect(output[0].name).toBe("Acme Corp");
+    expect(output[1].advertiser_id).toBe("222");
+    // Should NOT contain metadata fields
+    expect(output[0].pagination).toBeUndefined();
+    expect(output[0].cached).toBeUndefined();
   });
 
   it("--fields filters structuredContent output", async () => {
