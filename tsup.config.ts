@@ -1,5 +1,4 @@
 import { defineConfig } from "tsup";
-import { copyFileSync } from "node:fs";
 
 export default defineConfig({
   entry: { hopkin: "src/main.ts" },
@@ -15,9 +14,5 @@ export default defineConfig({
   noExternal: [/.*/],
   outExtension() {
     return { js: ".cjs" };
-  },
-  onSuccess() {
-    // Copy skill file into dist for packaging
-    copyFileSync("skill/SKILL.md", "dist/hopkin-cli.skill");
   },
 });

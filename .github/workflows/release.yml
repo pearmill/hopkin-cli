@@ -62,9 +62,6 @@ jobs:
       - run: npm ci
       - run: npm run build
 
-      - name: Prepare skill artifact
-        run: cp dist/hopkin-cli.skill hopkin-cli.skill
-
       - name: Generate changelog
         id: changelog
         run: |
@@ -91,20 +88,6 @@ jobs:
           npm install -g @hopkin/cli@${VERSION}
           \`\`\`
 
-          ## Claude Code Skill
-
-          Download \`hopkin-cli.skill\` and add it to your project:
-
-          \`\`\`bash
-          curl -fsSL https://github.com/${{ github.repository }}/releases/download/${GITHUB_REF_NAME}/hopkin-cli.skill -o .claude/skills/hopkin-cli.skill
-          \`\`\`
-
-          Or install via the CLI:
-
-          \`\`\`bash
-          hopkin skill install
-          \`\`\`
-
           ## Changes
 
           $(cat /tmp/changelog.txt)
@@ -115,5 +98,4 @@ jobs:
           gh release create "$GITHUB_REF_NAME" \
             --title "v${VERSION}" \
             --notes "$BODY" \
-            --verify-tag \
-            hopkin-cli.skill
+            --verify-tag
