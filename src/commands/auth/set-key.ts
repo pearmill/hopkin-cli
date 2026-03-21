@@ -48,5 +48,9 @@ export default defineCommand({
     creds.api_key = key;
     writeCredentials(creds, configDir);
     process.stderr.write("API key set successfully.\n");
+    process.stderr.write(
+      "Tip: Prefer HOPKIN_API_KEY env var or file-based auth over --api-key on shared machines,\n" +
+      "as command-line arguments are visible to other users via process listings.\n",
+    );
   },
 });

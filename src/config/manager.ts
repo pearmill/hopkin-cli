@@ -26,7 +26,7 @@ export function readConfig(configDir?: string): HopkinConfig {
 export function writeConfig(config: HopkinConfig, configDir?: string): void {
   ensureDir(configDir);
   const configPath = resolveConfigPath(configDir);
-  fs.writeFileSync(configPath, JSON.stringify(config, null, 2), "utf-8");
+  fs.writeFileSync(configPath, JSON.stringify(config, null, 2), { encoding: "utf-8", mode: 0o600 });
 }
 
 export function getConfigValue(keyPath: string, configDir?: string): unknown {
