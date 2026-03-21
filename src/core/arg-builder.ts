@@ -82,5 +82,15 @@ function coerce(value: unknown, schemaType: string): unknown {
     if (value === "false" || value === false) return false;
     return Boolean(value);
   }
+  if (schemaType === "object" || schemaType === "array") {
+    if (typeof value === "string") {
+      try {
+        return JSON.parse(value);
+      } catch {
+        throw new Error(`Invalid JSON for --${schemaType} argument: ${value}`);
+      }
+    }
+    return value;
+  }
   return value;
 }

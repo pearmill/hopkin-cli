@@ -112,6 +112,65 @@ describe("buildArgs", () => {
     expect(result.customer_id).toBe("123");
   });
 
+  it("parses JSON string into object for object-type schema property", () => {
+    const schema: JSONSchema = {
+      type: "object",
+      properties: {
+        time_range: { type: "object" },
+      },
+    };
+
+    const result = buildArgs(
+      { "time-range": '{"since":"2026-02-01","until":"2026-03-01"}' },
+      schema
+    );
+    expect(result.time_range).toEqual({
+      since: "2026-02-01",
+      until: "2026-03-01",
+    });
+  });
+
+  it("passes through already-parsed object for object-type schema property", () => {
+    const schema: JSONSchema = {
+      type: "object",
+      properties: {
+        time_range: { type: "object" },
+      },
+    };
+
+    const obj = { since: "2026-02-01", until: "2026-03-01" };
+    const result = buildArgs({ "time-range": obj }, schema);
+    expect(result.time_range).toEqual(obj);
+  });
+
+  it("throws descriptive error for invalid JSON on object-type property", () => {
+    const schema: JSONSchema = {
+      type: "object",
+      properties: {
+        time_range: { type: "object" },
+      },
+    };
+
+    expect(() =>
+      buildArgs({ "time-range": "not-json" }, schema)
+    ).toThrow(/Invalid JSON/);
+  });
+
+  it("parses JSON string into array for array-type schema property", () => {
+    const schema: JSONSchema = {
+      type: "object",
+      properties: {
+        metrics: { type: "array" },
+      },
+    };
+
+    const result = buildArgs(
+      { metrics: '["impressions","clicks"]' },
+      schema
+    );
+    expect(result.metrics).toEqual(["impressions", "clicks"]);
+  });
+
   it("converts kebab-case flag names to snake_case", () => {
     const schema: JSONSchema = {
       type: "object",
