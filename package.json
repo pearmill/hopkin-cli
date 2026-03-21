@@ -31,7 +31,7 @@
     "prepublishOnly": "npm run build && npm run test:all"
   },
   "dependencies": {
-    "@inquirer/prompts": "^7.5.0",
+    "@inquirer/prompts": "^8.3.2",
     "chalk": "^5.4.1",
     "citty": "^0.1.6",
     "cli-table3": "^0.6.5",
