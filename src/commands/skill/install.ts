@@ -1,17 +1,14 @@
 import { defineCommand } from "citty";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { fileURLToPath } from "node:url";
 import { supportsColor } from "../../output/colors.js";
 
 const SKILL_FILENAME = "hopkin-cli.skill";
 
 function findSkillSource(): string | null {
   // 1. Bundled in dist/ alongside the binary
-  const __filename = typeof __dirname !== "undefined"
-    ? path.join(__dirname, SKILL_FILENAME)
-    : path.join(path.dirname(fileURLToPath(import.meta.url)), SKILL_FILENAME);
-  if (fs.existsSync(__filename)) return __filename;
+  const nearby = path.join(__dirname, SKILL_FILENAME);
+  if (fs.existsSync(nearby)) return nearby;
 
   // 2. In the package root's dist/
   const fromDist = path.resolve(__dirname ?? ".", "..", SKILL_FILENAME);
