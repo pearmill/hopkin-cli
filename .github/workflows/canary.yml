@@ -8,34 +8,17 @@ concurrency:
   group: canary-${{ github.ref }}
   cancel-in-progress: true
 
-permissions:
-  id-token: write
-
 jobs:
   canary:
-    name: Publish canary
+    name: Build & test canary
     runs-on: ubuntu-latest
-    environment: npm
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
           node-version: 20
           cache: npm
-          registry-url: https://registry.npmjs.org
 
       - run: npm ci
       - run: npm run build
       - run: npm run test:all
-
-      # Set canary version: 0.1.0-canary.{sha}.{timestamp}
-      - name: Set canary version
-        run: |
-          SHORT_SHA=$(git rev-parse --short HEAD)
-          TIMESTAMP=$(date +%Y%m%d%H%M%S)
-          BASE_VERSION=$(node -p "require('./package.json').version")
-          CANARY_VERSION="${BASE_VERSION}-canary.${SHORT_SHA}.${TIMESTAMP}"
-          npm version "$CANARY_VERSION" --no-git-tag-version
-
-      - name: Publish canary
-        run: npm publish --tag canary --provenance --access public
