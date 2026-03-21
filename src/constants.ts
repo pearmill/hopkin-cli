@@ -15,6 +15,7 @@ export const DEFAULT_SERVERS: Record<string, { url: string }> = {
   google: { url: "https://google.mcp.hopkin.ai" },
   linkedin: { url: "https://linkedin.mcp.hopkin.ai" },
   reddit: { url: "https://reddit.mcp.hopkin.ai" },
+  tiktok: { url: "https://tiktok.mcp.hopkin.ai" }
 };
 
 export const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days

@@ -30,8 +30,13 @@ describe("Server registry", () => {
       expect(DEFAULT_SERVERS.reddit.url).toBe("https://reddit.mcp.hopkin.ai");
     });
 
-    it("exactly 4 default servers exist", () => {
-      expect(Object.keys(DEFAULT_SERVERS)).toHaveLength(4);
+    it("tiktok is present in defaults", () => {
+      expect(DEFAULT_SERVERS.tiktok).toBeDefined();
+      expect(DEFAULT_SERVERS.tiktok.url).toBe("https://tiktok.mcp.hopkin.ai");
+    });
+
+    it("exactly 5 default servers exist", () => {
+      expect(Object.keys(DEFAULT_SERVERS)).toHaveLength(5);
     });
   });
 
@@ -131,7 +136,7 @@ describe("Server registry", () => {
   describe("getPlatforms", () => {
     it("returns all default platforms sorted", () => {
       const platforms = getPlatforms();
-      expect(platforms).toEqual(["google", "linkedin", "meta", "reddit"]);
+      expect(platforms).toEqual(["google", "linkedin", "meta", "reddit", "tiktok"]);
     });
 
     it("includes custom platforms from config", () => {
