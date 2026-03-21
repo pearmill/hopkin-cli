@@ -1,0 +1,47 @@
+{
+  "tools": [
+    {
+      "name": "linkedin_ads_get_campaigns",
+      "description": "List campaigns for a LinkedIn Ads account",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": { "type": "string", "description": "LinkedIn Ads account ID" },
+          "status": { "type": "string", "enum": ["ACTIVE", "PAUSED", "ARCHIVED", "CANCELED", "DRAFT"], "description": "Filter by campaign status" },
+          "limit": { "type": "number", "description": "Number of results per page" },
+          "cursor": { "type": "string", "description": "Pagination cursor" }
+        },
+        "required": ["account_id"]
+      }
+    },
+    {
+      "name": "linkedin_ads_get_creatives",
+      "description": "List creatives for a LinkedIn Ads account",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": { "type": "string", "description": "LinkedIn Ads account ID" },
+          "campaign_id": { "type": "string", "description": "Campaign ID to filter by" },
+          "limit": { "type": "number", "description": "Number of results per page" },
+          "cursor": { "type": "string", "description": "Pagination cursor" }
+        },
+        "required": ["account_id"]
+      }
+    },
+    {
+      "name": "linkedin_ads_create_campaign",
+      "description": "Create a new LinkedIn Ads campaign",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": { "type": "string", "description": "LinkedIn Ads account ID" },
+          "name": { "type": "string", "description": "Campaign name" },
+          "objective_type": { "type": "string", "enum": ["BRAND_AWARENESS", "ENGAGEMENT", "LEAD_GENERATION", "WEBSITE_VISITS", "VIDEO_VIEWS"], "description": "Campaign objective" },
+          "status": { "type": "string", "enum": ["ACTIVE", "PAUSED", "DRAFT"], "description": "Campaign status" },
+          "daily_budget": { "type": "number", "description": "Daily budget in cents" }
+        },
+        "required": ["account_id", "name", "objective_type"]
+      }
+    }
+  ]
+}
