@@ -35,8 +35,13 @@ describe("Server registry", () => {
       expect(DEFAULT_SERVERS.tiktok.url).toBe("https://tiktok.mcp.hopkin.ai");
     });
 
-    it("exactly 5 default servers exist", () => {
-      expect(Object.keys(DEFAULT_SERVERS)).toHaveLength(5);
+    it("mailchimp is present in defaults", () => {
+      expect(DEFAULT_SERVERS.mailchimp).toBeDefined();
+      expect(DEFAULT_SERVERS.mailchimp.url).toBe("https://mailchimp.mcp.hopkin.ai");
+    });
+
+    it("exactly 6 default servers exist", () => {
+      expect(Object.keys(DEFAULT_SERVERS)).toHaveLength(6);
     });
   });
 
@@ -82,8 +87,8 @@ describe("Server registry", () => {
       };
       const servers = getServers(configServers);
 
-      // All 4 defaults + 1 custom
-      expect(Object.keys(servers)).toHaveLength(5);
+      // All 6 defaults (tiktok is already a default now)
+      expect(Object.keys(servers)).toHaveLength(6);
       expect(servers.meta).toBeDefined();
       expect(servers.google).toBeDefined();
       expect(servers.linkedin).toBeDefined();
@@ -136,7 +141,7 @@ describe("Server registry", () => {
   describe("getPlatforms", () => {
     it("returns all default platforms sorted", () => {
       const platforms = getPlatforms();
-      expect(platforms).toEqual(["google", "linkedin", "meta", "reddit", "tiktok"]);
+      expect(platforms).toEqual(["google", "linkedin", "mailchimp", "meta", "reddit", "tiktok"]);
     });
 
     it("includes custom platforms from config", () => {
