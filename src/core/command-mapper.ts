@@ -1,19 +1,51 @@
-import type { ParsedCommand } from "../types.js";
+import type { ParsedCommand, MCPTool } from "../types.js";
 
-const ADS_SEPARATOR = "_ads_";
+/**
+ * Detect the tool name prefix for a platform by inspecting its tools.
+ * Ad platforms use `{platform}_ads_`, others use `{platform}_`.
+ */
+export function detectToolPrefix(platform: string, tools: MCPTool[]): string {
+  const adsPrefix = `${platform}_ads_`;
+  if (tools.some((t) => t.name.startsWith(adsPrefix))) {
+    return adsPrefix;
+  }
+  return `${platform}_`;
+}
 
 /**
  * Parse an MCP tool name into a CLI command structure.
- * Tool name pattern: {platform}_ads_{verb}_{noun_with_underscores}
+ * Supports both `{platform}_ads_{verb}_{noun}` and `{platform}_{verb}_{noun}`.
+ * When platform is not provided, tries `_ads_` first, then first segment.
  */
-export function toolToCommand(toolName: string): ParsedCommand | null {
-  const adsIndex = toolName.indexOf(ADS_SEPARATOR);
-  if (adsIndex === -1) return null;
+export function toolToCommand(toolName: string, platform?: string): ParsedCommand | null {
+  let prefix: string;
 
-  const platform = toolName.slice(0, adsIndex);
-  if (!platform) return null;
+  if (platform) {
+    // Try _ads_ variant first, then bare platform prefix
+    const adsPrefix = `${platform}_ads_`;
+    if (toolName.startsWith(adsPrefix)) {
+      prefix = adsPrefix;
+    } else if (toolName.startsWith(`${platform}_`)) {
+      prefix = `${platform}_`;
+    } else {
+      return null;
+    }
+  } else {
+    // No platform hint: try _ads_ pattern first
+    const adsIndex = toolName.indexOf("_ads_");
+    if (adsIndex > 0) {
+      prefix = toolName.slice(0, adsIndex) + "_ads_";
+      platform = toolName.slice(0, adsIndex);
+    } else {
+      // Use first segment as platform
+      const firstUnderscore = toolName.indexOf("_");
+      if (firstUnderscore === -1) return null;
+      platform = toolName.slice(0, firstUnderscore);
+      prefix = `${platform}_`;
+    }
+  }
 
-  const rest = toolName.slice(adsIndex + ADS_SEPARATOR.length);
+  const rest = toolName.slice(prefix.length);
   if (!rest) return null;
 
   const firstUnderscore = rest.indexOf("_");
@@ -34,10 +66,12 @@ export function toolToCommand(toolName: string): ParsedCommand | null {
 
 /**
  * Convert a parsed CLI command back to an MCP tool name.
+ * Uses the provided prefix format, defaulting to `_ads_` for backwards compat.
  */
-export function commandToTool(parsed: ParsedCommand): string {
+export function commandToTool(parsed: ParsedCommand, toolPrefix?: string): string {
   const noun = parsed.noun.replace(/-/g, "_");
-  return `${parsed.platform}_ads_${parsed.verb}_${noun}`;
+  const prefix = toolPrefix ?? `${parsed.platform}_ads_`;
+  return `${prefix}${parsed.verb}_${noun}`;
 }
 
 /**
@@ -48,7 +82,7 @@ export function parseToolName(
   toolName: string,
   platform: string
 ): { noun: string; verb: string } | null {
-  const parsed = toolToCommand(toolName);
+  const parsed = toolToCommand(toolName, platform);
   if (!parsed || parsed.platform !== platform) return null;
   return { verb: parsed.verb, noun: parsed.noun };
 }

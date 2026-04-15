@@ -7,6 +7,7 @@ import { streamPages } from "../pagination/stream.js";
 import { executeTool, executeToolPaginated } from "../core/tool-executor.js";
 import { CommandNotFoundError } from "../errors.js";
 import { readConfig } from "../config/manager.js";
+import { detectToolPrefix } from "../core/command-mapper.js";
 import type {
   OutputFormat,
   PlatformConfig,
@@ -87,7 +88,7 @@ export function findToolForCommand(
 
   const tools = platformEntry.tools;
   const serverUrl = platformEntry.server_url;
-  const prefix = `${platform}_ads_`;
+  const prefix = detectToolPrefix(platform, tools);
 
   // Helper: check if a tool name matches
   const find = (name: string) => {
@@ -305,7 +306,7 @@ function suggestCommands(
   const entry = cache.entries[platform];
   if (!entry) return [];
 
-  const prefix = `${platform}_ads_`;
+  const prefix = detectToolPrefix(platform, entry.tools);
   const searchTerms = commandArgs.map((a) => a.replace(/-/g, "_"));
 
   const scored: { cmd: string; score: number }[] = [];
