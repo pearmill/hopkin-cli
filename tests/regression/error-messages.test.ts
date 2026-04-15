@@ -66,12 +66,12 @@ describe("Error message quality", () => {
     expect(result.stderr).toContain("hopkin tools list");
   });
 
-  it("platform-only command shows usage hint", async () => {
+  it("platform-only command shows platform help", async () => {
     const result = await spawnCLI(["meta"], {
       env: { HOPKIN_CONFIG_DIR: tmpDir },
     });
-    expect(result.exitCode).not.toBe(0);
-    expect(result.stderr).toContain("Usage:");
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("hopkin meta");
   });
 
   it("exit code is NOT_FOUND (4) for unknown commands", async () => {

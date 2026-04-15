@@ -80,8 +80,8 @@ export async function runCli(): Promise<void> {
   const firstArg = args[0];
 
   if (!firstArg || firstArg.startsWith("-") || builtinCommands.has(firstArg)) {
-    if (hasHelp && (!firstArg || firstArg.startsWith("-"))) {
-      // Root --help
+    if (!firstArg || (firstArg.startsWith("-") && !builtinCommands.has(firstArg))) {
+      // No command or only flags — show root help
       const cache = await ensureFreshCache();
       await printRootHelp(cache);
       return;
@@ -106,12 +106,13 @@ export async function runCli(): Promise<void> {
   const platforms = getPlatforms(config.servers);
 
   if (platforms.includes(firstArg)) {
-    if (hasHelp) {
+    const nonFlagArgs = extractNonFlagArgs(args);
+    // No subcommand (e.g. `hopkin meta`) or explicit --help → show help
+    if (hasHelp || nonFlagArgs.length <= 1) {
       await handlePlatformHelp(firstArg, args);
       return;
     }
     const globalOptions = parseGlobalFlags(args);
-    const nonFlagArgs = extractNonFlagArgs(args);
     await routePlatformCommand(nonFlagArgs, globalOptions);
     return;
   }
