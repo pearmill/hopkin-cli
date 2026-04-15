@@ -3,6 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { spawnCLI } from "../helpers/spawn-cli.js";
+import { DEFAULT_SERVERS } from "../../src/constants.js";
 import type { ToolsCache, MCPTool } from "../../src/types.js";
 
 // ── Helpers ──────────────────────────────────────────────────────────
@@ -50,18 +51,18 @@ function seedConfigDir(): string {
   // Config with no custom servers
   fs.writeFileSync(path.join(dir, "config.json"), JSON.stringify({}));
 
-  // Tools cache
-  const cache: ToolsCache = {
-    version: 1,
-    entries: {
-      meta: {
-        platform: "meta",
-        tools: META_TOOLS,
-        fetched_at: Date.now(),
-        server_url: "http://localhost:9999",
-      },
-    },
-  };
+  // Tools cache — seed all default platforms so ensureFreshCache doesn't
+  // try to fetch from live servers during tests
+  const entries: ToolsCache["entries"] = {};
+  for (const platform of Object.keys(DEFAULT_SERVERS)) {
+    entries[platform] = {
+      platform,
+      tools: platform === "meta" ? META_TOOLS : [],
+      fetched_at: Date.now(),
+      server_url: DEFAULT_SERVERS[platform].url,
+    };
+  }
+  const cache: ToolsCache = { version: 1, entries };
   fs.writeFileSync(path.join(dir, "tools-cache.json"), JSON.stringify(cache));
 
   return dir;

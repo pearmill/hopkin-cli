@@ -146,6 +146,7 @@ describe("tool-discovery", () => {
       mockToolsList("linkedin", overrides.linkedin ?? []);
       mockToolsList("reddit", overrides.reddit ?? []);
       mockToolsList("tiktok", overrides.tiktok ?? []);
+      mockToolsList("mailchimp", overrides.mailchimp ?? []);
     }
 
     it("fetches from all servers when no cache exists", async () => {
@@ -167,6 +168,7 @@ describe("tool-discovery", () => {
         linkedin: { tools: [], serverUrl: "https://linkedin.mcp.hopkin.ai" },
         reddit: { tools: [], serverUrl: "https://reddit.mcp.hopkin.ai" },
         tiktok: { tools: [], serverUrl: "https://tiktok.mcp.hopkin.ai" },
+        mailchimp: { tools: [], serverUrl: "https://mailchimp.mcp.hopkin.ai" },
       });
       writeToolsCache(cache, tmpDir);
 
