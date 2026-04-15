@@ -43,12 +43,44 @@ describe("command-mapper", () => {
       });
     });
 
-    it("returns null for unrecognized names (no _ads_ pattern)", () => {
-      expect(toolToCommand("random_tool_name")).toBeNull();
+    it("parses tool names without _ads_ separator", () => {
+      expect(toolToCommand("mailchimp_list_campaigns")).toEqual({
+        platform: "mailchimp",
+        noun: "campaigns",
+        verb: "list",
+      });
+    });
+
+    it("parses mailchimp_check_auth_status (no _ads_, multi-word noun)", () => {
+      expect(toolToCommand("mailchimp_check_auth_status")).toEqual({
+        platform: "mailchimp",
+        noun: "auth-status",
+        verb: "check",
+      });
+    });
+
+    it("parses mailchimp_get_audience_insights (no _ads_, multi-word noun)", () => {
+      expect(toolToCommand("mailchimp_get_audience_insights")).toEqual({
+        platform: "mailchimp",
+        noun: "audience-insights",
+        verb: "get",
+      });
+    });
+
+    it("prefers _ads_ separator when present", () => {
+      expect(toolToCommand("meta_ads_get_campaigns")).toEqual({
+        platform: "meta",
+        noun: "campaigns",
+        verb: "get",
+      });
     });
 
     it("returns null for empty string", () => {
       expect(toolToCommand("")).toBeNull();
+    });
+
+    it("returns null for single word (no underscore)", () => {
+      expect(toolToCommand("ping")).toBeNull();
     });
 
     it("handles extra underscores in noun part", () => {
@@ -73,6 +105,12 @@ describe("command-mapper", () => {
       ).toBe("google_ads_get_ad_groups");
     });
 
+    it("uses custom prefix when provided", () => {
+      expect(
+        commandToTool({ platform: "mailchimp", noun: "campaigns", verb: "list" }, "mailchimp_")
+      ).toBe("mailchimp_list_campaigns");
+    });
+
     it("roundtrips with toolToCommand", () => {
       const toolName = "meta_ads_create_campaign";
       const parsed = toolToCommand(toolName);
@@ -85,6 +123,13 @@ describe("command-mapper", () => {
       const parsed = toolToCommand(toolName);
       expect(parsed).not.toBeNull();
       expect(commandToTool(parsed!)).toBe(toolName);
+    });
+
+    it("roundtrips non-ads tool names with custom prefix", () => {
+      const toolName = "mailchimp_list_campaigns";
+      const parsed = toolToCommand(toolName);
+      expect(parsed).not.toBeNull();
+      expect(commandToTool(parsed!, "mailchimp_")).toBe(toolName);
     });
   });
 

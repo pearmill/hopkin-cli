@@ -1,6 +1,7 @@
 import { VERSION, CLI_NAME } from "./constants.js";
 import { COLORS, supportsColor } from "./output/colors.js";
 import { schemaToFlags } from "./core/schema-to-flags.js";
+import { detectToolPrefix } from "./core/command-mapper.js";
 import type { ToolsCache, ToolsCacheEntry, MCPTool, FlagDefinition } from "./types.js";
 
 // ── Chalk helpers (lazy-loaded) ─────────────────────────────────────
@@ -39,9 +40,8 @@ async function getStylers(): Promise<Stylers> {
  */
 function parseToolSuffix(
   toolName: string,
-  platform: string,
+  prefix: string,
 ): { verb: string; noun: string | null } {
-  const prefix = `${platform}_ads_`;
   if (!toolName.startsWith(prefix)) return { verb: toolName, noun: null };
   const rest = toolName.slice(prefix.length);
   const idx = rest.indexOf("_");
@@ -60,9 +60,10 @@ function groupToolsByResource(
 ): Map<string, { verb: string; tool: MCPTool }[]> {
   const groups = new Map<string, { verb: string; tool: MCPTool }[]>();
   const standalone: { verb: string; tool: MCPTool }[] = [];
+  const prefix = detectToolPrefix(entry.platform, entry.tools);
 
   for (const tool of entry.tools) {
-    const { verb, noun } = parseToolSuffix(tool.name, entry.platform);
+    const { verb, noun } = parseToolSuffix(tool.name, prefix);
     if (noun) {
       const list = groups.get(noun) ?? [];
       list.push({ verb, tool });
@@ -324,7 +325,7 @@ function printGlobalFlags(lines: string[], s: Stylers): void {
 }
 
 function deriveResources(entry: ToolsCacheEntry): string[] {
-  const prefix = `${entry.platform}_ads_`;
+  const prefix = detectToolPrefix(entry.platform, entry.tools);
   const nouns = new Set<string>();
   for (const tool of entry.tools) {
     if (!tool.name.startsWith(prefix)) continue;

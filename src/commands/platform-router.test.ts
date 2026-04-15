@@ -42,6 +42,18 @@ const GOOGLE_TOOLS: MCPTool[] = [
   makeTool("google_ads_get_insights", "Get insights"),
 ];
 
+const MAILCHIMP_TOOLS: MCPTool[] = [
+  makeTool("mailchimp_check_auth_status", "Check auth status"),
+  makeTool("mailchimp_list_campaigns", "List campaigns"),
+  makeTool("mailchimp_get_campaign", "Get campaign details"),
+  makeTool("mailchimp_list_audiences", "List audiences"),
+  makeTool("mailchimp_get_audience", "Get audience details"),
+  makeTool("mailchimp_get_audience_insights", "Get audience insights"),
+  makeTool("mailchimp_list_templates", "List templates"),
+  makeTool("mailchimp_ping", "Ping"),
+  makeTool("mailchimp_developer_feedback", "Dev feedback"),
+];
+
 // ── findToolForCommand ───────────────────────────────────────────────
 
 describe("findToolForCommand", () => {
@@ -154,6 +166,60 @@ describe("findToolForCommand", () => {
     });
   });
 });
+
+  describe("non-ads platforms: mailchimp (no _ads_ separator)", () => {
+    const mailchimpCache = makeCache("mailchimp", MAILCHIMP_TOOLS);
+
+    it("direct match: ping → mailchimp_ping", () => {
+      const result = findToolForCommand("mailchimp", ["ping"], mailchimpCache);
+      expect(result?.tool.name).toBe("mailchimp_ping");
+    });
+
+    it("defaults to list_: campaigns → mailchimp_list_campaigns", () => {
+      const result = findToolForCommand("mailchimp", ["campaigns"], mailchimpCache);
+      expect(result?.tool.name).toBe("mailchimp_list_campaigns");
+    });
+
+    it("falls back to get_ if no list_: audience → mailchimp_get_audience", () => {
+      const result = findToolForCommand("mailchimp", ["audience"], mailchimpCache);
+      expect(result?.tool.name).toBe("mailchimp_get_audience");
+    });
+
+    it("noun verb: campaigns list → mailchimp_list_campaigns", () => {
+      const result = findToolForCommand("mailchimp", ["campaigns", "list"], mailchimpCache);
+      expect(result?.tool.name).toBe("mailchimp_list_campaigns");
+    });
+
+    it("noun verb: campaign get → mailchimp_get_campaign", () => {
+      const result = findToolForCommand("mailchimp", ["campaign", "get"], mailchimpCache);
+      expect(result?.tool.name).toBe("mailchimp_get_campaign");
+    });
+
+    it("verb noun: list audiences → mailchimp_list_audiences", () => {
+      const result = findToolForCommand("mailchimp", ["list", "audiences"], mailchimpCache);
+      expect(result?.tool.name).toBe("mailchimp_list_audiences");
+    });
+
+    it("direct concatenation: check auth-status → mailchimp_check_auth_status", () => {
+      const result = findToolForCommand("mailchimp", ["check", "auth-status"], mailchimpCache);
+      expect(result?.tool.name).toBe("mailchimp_check_auth_status");
+    });
+
+    it("developer feedback → mailchimp_developer_feedback", () => {
+      const result = findToolForCommand("mailchimp", ["developer", "feedback"], mailchimpCache);
+      expect(result?.tool.name).toBe("mailchimp_developer_feedback");
+    });
+
+    it("hyphenated noun: audience-insights get → mailchimp_get_audience_insights", () => {
+      const result = findToolForCommand("mailchimp", ["audience-insights", "get"], mailchimpCache);
+      expect(result?.tool.name).toBe("mailchimp_get_audience_insights");
+    });
+
+    it("returns null for unknown resource", () => {
+      const result = findToolForCommand("mailchimp", ["nonexistent"], mailchimpCache);
+      expect(result).toBeNull();
+    });
+  });
 
 // ── parseResponseData (imported indirectly via module) ────────────────
 // parseResponseData is not exported, so we test it through the integration tests.
