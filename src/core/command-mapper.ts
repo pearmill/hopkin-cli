@@ -1,10 +1,28 @@
 import type { ParsedCommand, MCPTool } from "../types.js";
 
 /**
+ * Maps platform keys to their actual tool name prefixes when they differ
+ * from the default `{platform}_` / `{platform}_ads_` convention.
+ */
+const PLATFORM_TOOL_ALIASES: Record<string, string> = {
+  gsc: "google_search_console",
+};
+
+/**
  * Detect the tool name prefix for a platform by inspecting its tools.
  * Ad platforms use `{platform}_ads_`, others use `{platform}_`.
+ * Platforms with aliases (e.g. gcs → google_search_console) are checked first.
  */
 export function detectToolPrefix(platform: string, tools: MCPTool[]): string {
+  const alias = PLATFORM_TOOL_ALIASES[platform];
+  if (alias) {
+    const aliasAdsPrefix = `${alias}_ads_`;
+    if (tools.some((t) => t.name.startsWith(aliasAdsPrefix))) {
+      return aliasAdsPrefix;
+    }
+    return `${alias}_`;
+  }
+
   const adsPrefix = `${platform}_ads_`;
   if (tools.some((t) => t.name.startsWith(adsPrefix))) {
     return adsPrefix;
@@ -21,12 +39,14 @@ export function toolToCommand(toolName: string, platform?: string): ParsedComman
   let prefix: string;
 
   if (platform) {
-    // Try _ads_ variant first, then bare platform prefix
-    const adsPrefix = `${platform}_ads_`;
+    const alias = PLATFORM_TOOL_ALIASES[platform];
+    const base = alias ?? platform;
+    // Try _ads_ variant first, then bare prefix
+    const adsPrefix = `${base}_ads_`;
     if (toolName.startsWith(adsPrefix)) {
       prefix = adsPrefix;
-    } else if (toolName.startsWith(`${platform}_`)) {
-      prefix = `${platform}_`;
+    } else if (toolName.startsWith(`${base}_`)) {
+      prefix = `${base}_`;
     } else {
       return null;
     }
@@ -70,7 +90,8 @@ export function toolToCommand(toolName: string, platform?: string): ParsedComman
  */
 export function commandToTool(parsed: ParsedCommand, toolPrefix?: string): string {
   const noun = parsed.noun.replace(/-/g, "_");
-  const prefix = toolPrefix ?? `${parsed.platform}_ads_`;
+  const alias = PLATFORM_TOOL_ALIASES[parsed.platform];
+  const prefix = toolPrefix ?? `${alias ?? parsed.platform}_ads_`;
   return `${prefix}${parsed.verb}_${noun}`;
 }
 
