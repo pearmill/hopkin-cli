@@ -1,4 +1,4 @@
-export const VERSION = "0.1.3";
+export const VERSION = "0.1.4";
 export const CLI_NAME = "hopkin";
 
 export const EXIT_CODES = {
