@@ -73,14 +73,14 @@ describe("config/servers", () => {
   describe("getPlatforms", () => {
     it("returns all platforms sorted", () => {
       const platforms = getPlatforms();
-      expect(platforms).toEqual(["google", "linkedin", "mailchimp", "meta", "reddit", "tiktok"]);
+      expect(platforms).toEqual(["google", "gsc", "linkedin", "mailchimp", "meta", "reddit", "tiktok"]);
     });
 
     it("includes custom platforms sorted with defaults", () => {
       const platforms = getPlatforms({
         snapchat: { url: "https://mcp.hopkin.ai/snapchat" },
       });
-      expect(platforms).toEqual(["google", "linkedin", "mailchimp", "meta", "reddit", "snapchat", "tiktok"]);
+      expect(platforms).toEqual(["google", "gsc", "linkedin", "mailchimp", "meta", "reddit", "snapchat", "tiktok"]);
     });
   });
 });

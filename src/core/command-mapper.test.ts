@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { toolToCommand, commandToTool, parseToolName } from "./command-mapper.js";
+import { toolToCommand, commandToTool, parseToolName, detectToolPrefix } from "./command-mapper.js";
 
 describe("command-mapper", () => {
   describe("toolToCommand", () => {
@@ -130,6 +130,73 @@ describe("command-mapper", () => {
       const parsed = toolToCommand(toolName);
       expect(parsed).not.toBeNull();
       expect(commandToTool(parsed!, "mailchimp_")).toBe(toolName);
+    });
+  });
+
+  describe("detectToolPrefix", () => {
+    it("returns ads prefix for ad platforms", () => {
+      const tools = [{ name: "meta_ads_get_campaigns", description: "", inputSchema: { type: "object" as const } }];
+      expect(detectToolPrefix("meta", tools)).toBe("meta_ads_");
+    });
+
+    it("returns bare prefix for non-ads platforms", () => {
+      const tools = [{ name: "mailchimp_list_campaigns", description: "", inputSchema: { type: "object" as const } }];
+      expect(detectToolPrefix("mailchimp", tools)).toBe("mailchimp_");
+    });
+
+    it("resolves gsc alias to google_search_console_", () => {
+      const tools = [{ name: "google_search_console_check_auth_status", description: "", inputSchema: { type: "object" as const } }];
+      expect(detectToolPrefix("gsc", tools)).toBe("google_search_console_");
+    });
+  });
+
+  describe("toolToCommand with aliased platform", () => {
+    it("parses google_search_console_check_auth_status with gsc platform hint", () => {
+      expect(toolToCommand("google_search_console_check_auth_status", "gsc")).toEqual({
+        platform: "gsc",
+        noun: "auth-status",
+        verb: "check",
+      });
+    });
+
+    it("parses google_search_console_list_sites with gsc platform hint", () => {
+      expect(toolToCommand("google_search_console_list_sites", "gsc")).toEqual({
+        platform: "gsc",
+        noun: "sites",
+        verb: "list",
+      });
+    });
+
+    it("returns null for non-matching tool with gsc platform hint", () => {
+      expect(toolToCommand("meta_ads_get_campaigns", "gsc")).toBeNull();
+    });
+  });
+
+  describe("commandToTool with aliased platform", () => {
+    it("uses explicit prefix when provided", () => {
+      expect(
+        commandToTool({ platform: "gsc", noun: "sites", verb: "list" }, "google_search_console_")
+      ).toBe("google_search_console_list_sites");
+    });
+
+    it("roundtrips gsc tool name with explicit prefix", () => {
+      const toolName = "google_search_console_check_auth_status";
+      const parsed = toolToCommand(toolName, "gsc");
+      expect(parsed).not.toBeNull();
+      expect(commandToTool(parsed!, "google_search_console_")).toBe(toolName);
+    });
+  });
+
+  describe("parseToolName with aliased platform", () => {
+    it("extracts verb and noun for gsc platform", () => {
+      expect(parseToolName("google_search_console_check_auth_status", "gsc")).toEqual({
+        verb: "check",
+        noun: "auth-status",
+      });
+    });
+
+    it("returns null if tool does not match gsc alias", () => {
+      expect(parseToolName("meta_ads_get_campaigns", "gsc")).toBeNull();
     });
   });
 
