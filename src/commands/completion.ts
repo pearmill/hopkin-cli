@@ -1,16 +1,13 @@
 import { defineCommand } from "citty";
-import { CLI_NAME } from "../constants.js";
+import { CLI_NAME, DEFAULT_SERVERS } from "../constants.js";
 
+const BUILTIN_COMMANDS = ["auth", "config", "tools", "apikeys", "completion"];
+
+// Platform subcommands are derived from the server registry so completion
+// stays in sync as platforms are added, rather than a hardcoded subset.
 const TOP_LEVEL_COMMANDS = [
-  "auth",
-  "config",
-  "tools",
-  "apikeys",
-  "completion",
-  "meta",
-  "google",
-  "linkedin",
-  "reddit",
+  ...BUILTIN_COMMANDS,
+  ...Object.keys(DEFAULT_SERVERS).sort(),
 ];
 
 const SUBCOMMANDS: Record<string, string[]> = {

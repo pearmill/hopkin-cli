@@ -148,6 +148,8 @@ describe("tool-discovery", () => {
       mockToolsList("tiktok", overrides.tiktok ?? []);
       mockToolsList("mailchimp", overrides.mailchimp ?? []);
       mockToolsList("gsc", overrides.gsc ?? []);
+      mockToolsList("ga4", overrides.ga4 ?? []);
+      mockToolsList("chatgpt", overrides.chatgpt ?? []);
     }
 
     it("fetches from all servers when no cache exists", async () => {
@@ -171,6 +173,8 @@ describe("tool-discovery", () => {
         tiktok: { tools: [], serverUrl: "https://tiktok.mcp.hopkin.ai" },
         mailchimp: { tools: [], serverUrl: "https://mailchimp.mcp.hopkin.ai" },
         gsc: { tools: [], serverUrl: "https://gsc.mcp.hopkin.ai" },
+        ga4: { tools: [], serverUrl: "https://ga4.mcp.hopkin.ai" },
+        chatgpt: { tools: [], serverUrl: "https://chatgpt.mcp.hopkin.ai" },
       });
       writeToolsCache(cache, tmpDir);
 

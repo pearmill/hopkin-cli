@@ -1,6 +1,6 @@
 # Hopkin CLI
 
-Manage your ad campaigns and marketing tools across Meta, Google, LinkedIn, Reddit, TikTok, Mailchimp, and Google Search Console — all from the terminal.
+Manage your ad campaigns and marketing tools across Meta, Google, LinkedIn, Reddit, TikTok, Mailchimp, Google Search Console, Google Analytics, and ChatGPT — all from the terminal.
 
 Hopkin CLI provides a unified interface to interact with ad and marketing platforms. Instead of juggling multiple dashboards, run one command.
 
@@ -39,6 +39,8 @@ hopkin reddit campaigns list --format csv --output campaigns.csv
 | TikTok                 | `tiktok`     |
 | Mailchimp              | `mailchimp`  |
 | Google Search Console  | `gsc`        |
+| Google Analytics       | `ga4`        |
+| ChatGPT Ads            | `chatgpt`    |
 
 ## Usage
 
