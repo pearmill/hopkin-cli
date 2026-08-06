@@ -1,4 +1,4 @@
-export const VERSION = "0.1.4";
+export const VERSION = "0.1.5";
 export const CLI_NAME = "hopkin";
 
 export const EXIT_CODES = {
@@ -17,7 +17,9 @@ export const DEFAULT_SERVERS: Record<string, { url: string }> = {
   reddit: { url: "https://reddit.mcp.hopkin.ai" },
   tiktok: { url: "https://tiktok.mcp.hopkin.ai" },
   mailchimp: { url: "https://mailchimp.mcp.hopkin.ai" },
-  gsc: { url: "https://gsc.mcp.hopkin.ai" }
+  gsc: { url: "https://gsc.mcp.hopkin.ai" },
+  ga4: { url: "https://ga4.mcp.hopkin.ai" },
+  chatgpt: { url: "https://chatgpt.mcp.hopkin.ai" }
 };
 
 export const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
