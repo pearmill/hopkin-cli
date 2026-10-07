@@ -1,12 +1,15 @@
+import { parseJsonBody } from "../core/parse-body.js";
 import type { MCPToolCallResponse, PageResult } from "../types.js";
 
 export interface PaginatorOptions {
   fetchPage: (cursor?: string) => Promise<MCPToolCallResponse>;
   limit?: number;
   all?: boolean;
+  /** Label for the request, used in error messages (e.g. the tool name). */
+  label?: string;
 }
 
-function parseResponse(response: MCPToolCallResponse): PageResult {
+function parseResponse(response: MCPToolCallResponse, label = "tools/call"): PageResult {
   // Prefer structuredContent — it has typed data + pagination info
   if (response.structuredContent) {
     const sc = response.structuredContent;
@@ -18,7 +21,7 @@ function parseResponse(response: MCPToolCallResponse): PageResult {
   }
 
   const text = response.content[0]?.text ?? "[]";
-  const data = JSON.parse(text) as Record<string, unknown>[];
+  const data = parseJsonBody<Record<string, unknown>[]>(text, 200, label);
 
   const cursor = response._meta?.cursor;
   const has_more = response._meta?.has_more ?? false;
@@ -30,13 +33,13 @@ function parseResponse(response: MCPToolCallResponse): PageResult {
 export async function* paginate(
   options: PaginatorOptions,
 ): AsyncGenerator<PageResult> {
-  const { fetchPage, all = false } = options;
+  const { fetchPage, all = false, label } = options;
 
   let cursor: string | undefined;
 
   // Fetch first page
   const firstResponse = await fetchPage(cursor);
-  const firstPage = parseResponse(firstResponse);
+  const firstPage = parseResponse(firstResponse, label);
   yield firstPage;
 
   if (!all) return;
@@ -46,7 +49,7 @@ export async function* paginate(
 
   while (hasMore && cursor) {
     const response = await fetchPage(cursor);
-    const page = parseResponse(response);
+    const page = parseResponse(response, label);
     yield page;
 
     cursor = page.cursor;

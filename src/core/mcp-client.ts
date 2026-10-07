@@ -1,4 +1,5 @@
 import { AuthError, APIError } from "../errors.js";
+import { parseJsonBody } from "./parse-body.js";
 import { debugRequest, debugResponse, setDebug } from "../util/debug.js";
 import type { MCPToolsListResponse, MCPToolCallResponse } from "../types.js";
 
@@ -16,6 +17,18 @@ const DEFAULT_BACKOFF_MS = [1000, 2000, 4000];
 
 function isRetryable(status: number): boolean {
   return status === 429 || status >= 500;
+}
+
+function describeRequest(baseUrl: string, body: Record<string, unknown>): string {
+  let path = baseUrl;
+  try {
+    path = new URL(baseUrl).pathname;
+  } catch {
+    // keep baseUrl as given
+  }
+  const params = body.params as { name?: unknown } | undefined;
+  const tool = typeof params?.name === "string" ? params.name : String(body.method ?? "");
+  return `${path} ${tool}`.trim();
 }
 
 export class MCPClient {
@@ -115,7 +128,12 @@ export class MCPClient {
         );
       }
 
-      const data = (await response.json()) as Record<string, unknown>;
+      const text = await response.text();
+      const data = parseJsonBody<Record<string, unknown>>(
+        text,
+        response.status,
+        describeRequest(this.baseUrl, body),
+      );
       // Handle JSON-RPC response wrapper
       if ("result" in data) {
         return data.result as T;

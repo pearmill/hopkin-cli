@@ -49,5 +49,6 @@ export async function* executeToolPaginated(
     fetchPage,
     all: options.all,
     limit: options.limit,
+    label: options.toolName,
   });
 }

@@ -122,3 +122,14 @@ describe("paginate", () => {
     expect(pages[0]!.has_more).toBe(false);
   });
 });
+
+describe("paginate non-JSON tool text", () => {
+  it("throws an APIError with the full text, not a JSON parse error", async () => {
+    const fetchPage = vi.fn().mockResolvedValue({
+      content: [{ type: "text", text: "Error: You do not have access to customer 6196452625" }],
+    });
+    await expect(collectPages(paginate({ fetchPage, label: "google_ads_get_performance_report" }))).rejects.toThrow(
+      "Hopkin API returned non-JSON (HTTP 200) for google_ads_get_performance_report: Error: You do not have access to customer 6196452625",
+    );
+  });
+});

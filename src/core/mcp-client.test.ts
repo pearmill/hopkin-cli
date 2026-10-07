@@ -201,3 +201,21 @@ describe("MCPClient", () => {
     });
   });
 });
+
+describe("MCPClient non-JSON replies", () => {
+  afterEach(() => nock.cleanAll());
+
+  it("surfaces the full text body with status and path instead of a JSON parse error", async () => {
+    const long = "Error: You have exceeded the quota. " + "x".repeat(3000);
+    nock(BASE_ORIGIN).post(SERVER_PATH).reply(200, long, { "Content-Type": "text/plain" });
+
+    const client = createClient();
+    const err = await client.toolsCall("google_ads_get_performance_report", {}).catch((e) => e);
+    expect(err).toBeInstanceOf(APIError);
+    expect(err.message).toContain("Hopkin API returned non-JSON (HTTP 200) for / google_ads_get_performance_report: Error: You have exceeded the quota.");
+    expect(err.message).not.toContain("is not valid JSON");
+    expect(err.message).not.toContain(API_KEY);
+    expect(err.message.length).toBeLessThan(2300);
+    expect(err.exitCode).not.toBe(0);
+  });
+});
